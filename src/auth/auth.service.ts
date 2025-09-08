@@ -3,12 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { compare } from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
-@Injectable
+@Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async validateUser(email: string, password: string) {
@@ -32,6 +34,12 @@ export class AuthService {
       email: user.email,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
+    };
+  }
+
+  async logIn(User) {
+    return {
+      accessToken: this.jwtService.sign(User),
     };
   }
 }
