@@ -14,7 +14,7 @@ export class ArticleController {
 
     const title = body.title;
     const content = body.content;
-    
+
     const article = await this.articleService.createArticle(
       title,
       content,
@@ -26,9 +26,27 @@ export class ArticleController {
   @Get('/:id')
   async readArticle(@Param('id') id) {
     const articleId = id;
-    
+
     const article = await this.articleService.getArticle(articleId);
-    
+
     return article;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/:id')
+  async updateArticle(@Param('id') id, @Body() body, @User() user) {
+    const userId = user.id;
+    const articleId = id;
+
+    const title = body.title;
+    const content = body.content;
+
+    const res = await this.articleService.modifyArticle(
+      userId,
+      articleId,
+      title,
+      content,
+    );
+    return res;
   }
 }
