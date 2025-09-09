@@ -48,6 +48,7 @@ export class ArticleService {
         content: content,
       },
     );
-    
-    return { affected: updateResult?.affected};
+
+    return { affected: updateResult?.affected };
+  }
 }
