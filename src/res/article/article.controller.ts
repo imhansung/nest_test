@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { User } from 'src/decorators/user.decorator';
@@ -20,6 +20,15 @@ export class ArticleController {
       content,
       userId,
     );
+    return article;
+  }
+
+  @Get('/:id')
+  async readArticle(@Param('id') id) {
+    const articleId = id;
+    
+    const article = await this.articleService.getArticle(articleId);
+    
     return article;
   }
 }
