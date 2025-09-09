@@ -1,14 +1,20 @@
 import { Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { AuthService } from './auth.service';
+import { ApiBody, ApiOperation } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiOperation({
+    summary: '로그인',
+    description: '사용자가 로컬 로그인을 합니다.',
+  })
+  @ApiBody({})
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async logIn(@Req() req){
+  async logIn(@Req() req) {
     const user = req?.user;
 
     console.log('user : ', user);
