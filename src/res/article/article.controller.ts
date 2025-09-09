@@ -1,15 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { User } from 'src/decorators/user.decorator';
 import { CreateArticleDto } from 'src/dtos/article/create-article.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { undefinedToNullInterceptor } from 'src/interceptors/undefinedToNull.interceptor';
 
+@UseInterceptors(undefinedToNullInterceptor) //컨트롤러 전체에서 사용하기
 @ApiTags('게시글API') // ApiTag를 통해 Article Controller가 무슨 역할을 하는지 태그를 달아줍니다.
 @Controller('article')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
+  @UseInterceptors(undefinedToNullInterceptor) // 일부 함수에서 사용하기
   @ApiOperation({
     summary: '게시글 생성 API',
     description: '유저가 게시글을 작성한다.',
