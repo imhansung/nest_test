@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ArticleEntity } from 'src/entities/article.entity';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 
 @Injectable()
 export class ArticleService {
@@ -29,7 +29,12 @@ export class ArticleService {
     return article;
   }
 
-  async modifyArticle(userId:string, articleId: string, title: string, content: string) {
+  async modifyArticle(
+    userId: string,
+    articleId: string,
+    title: string,
+    content: string,
+  ) {
     const article = await this.articleRepository.findOne({
       where: {
         id: articleId,
@@ -37,7 +42,7 @@ export class ArticleService {
       },
     });
 
-    if(!article) {
+    if (!article) {
       throw new UnauthorizedException('본인의 게시글이 아닙니다.');
     }
 
@@ -50,5 +55,14 @@ export class ArticleService {
     );
 
     return { affected: updateResult?.affected };
+  }
+
+  async removeArticle(userId: string, articleId: string) {
+    const deleteResult = await this.articleRepository.softDelete({
+      id: articleId,
+      userId: userId,
+    });
+
+    return { affected: deleteResult?.affected };
   }
 }

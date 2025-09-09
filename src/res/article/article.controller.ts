@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { User } from 'src/decorators/user.decorator';
@@ -47,6 +47,16 @@ export class ArticleController {
       title,
       content,
     );
+    return res;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('/:id')
+  async deleteArticle(@Param('id') id, @User() user) {
+    const userId = user.id;
+    const articleId = id;
+
+    const res = await this.articleService.removeArticle(userId, articleId);
     return res;
   }
 }
