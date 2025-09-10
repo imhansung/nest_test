@@ -1,11 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { User } from 'src/decorators/user.decorator';
 import { CreateArticleDto } from 'src/dtos/article/create-article.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { undefinedToNullInterceptor } from 'src/interceptors/undefinedToNull.interceptor';
+import { HttpExceptionFilter } from 'src/filter/http-exception.filter';
 
+@UseFilters(HttpExceptionFilter) // 컨트롤러 전체에서 사용하기
 @UseInterceptors(undefinedToNullInterceptor) //컨트롤러 전체에서 사용하기
 @ApiTags('게시글API') // ApiTag를 통해 Article Controller가 무슨 역할을 하는지 태그를 달아줍니다.
 @Controller('article')
@@ -37,6 +39,7 @@ export class ArticleController {
     return article;
   }
 
+  @UseFilters(HttpExceptionFilter) // 개별함수에서 사용하기
   @Get('/:id')
   async readArticle(@Param('id') id) {
     const articleId = id;
