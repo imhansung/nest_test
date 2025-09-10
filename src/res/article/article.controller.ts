@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { User } from 'src/decorators/user.decorator';
@@ -41,8 +41,8 @@ export class ArticleController {
 
   @UseFilters(HttpExceptionFilter) // 개별함수에서 사용하기
   @Get('/:id')
-  async readArticle(@Param('id') id) {
-    const articleId = id;
+  async readArticle(@Param('id', ParseIntPipe) id: number) { // 파이프 사용해서 데이터 검증하기
+    const articleId = id.toString();
 
     const article = await this.articleService.getArticle(articleId);
 
